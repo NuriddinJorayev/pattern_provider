@@ -1,7 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:patterns_provider/models/post_model.dart';
-import 'package:patterns_provider/services/functions/create_delete_add.dart';
+import 'package:patterns_provider/services/http_server.dart';
 
 class Update_view_model extends ChangeNotifier {
   bool isloading = false;
@@ -22,7 +21,7 @@ class Update_view_model extends ChangeNotifier {
       notifyListeners();
       post.title = text1;
       post.body = text2;
-      await Create_delete_add_function.Update(post);
+      await Rest_APi.PUT_Update(post);
       isloading = false;
       notifyListeners();
       Navigator.pop(context, "new_post");

@@ -1,9 +1,7 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:patterns_provider/models/post_model.dart';
-import 'package:patterns_provider/services/functions/create_delete_add.dart';
 import 'package:patterns_provider/services/http_server.dart';
 
 class Create_view_model extends ChangeNotifier {
@@ -17,10 +15,10 @@ class Create_view_model extends ChangeNotifier {
     if (text1.isNotEmpty && text2.isNotEmpty) {
       isloading = true;
       notifyListeners();
-      var posts = await Rest_APi.GET_parsed_list(Rest_APi.API_GET);
+      var posts = await Rest_APi.GET_POST();
       var id = random_id(posts);
       var new_post = Post(int.parse(id), text1, text2, int.parse(id));
-      await Create_delete_add_function.Create(new_post);
+      await Rest_APi.POST_Create(new_post);
       isloading = false;
       notifyListeners();
       Navigator.pop(context, "new_post");

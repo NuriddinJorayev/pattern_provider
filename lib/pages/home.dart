@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   static final String id = "home_page";
-  Home({Key? key}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -34,6 +33,7 @@ class _HomeState extends State<Home> {
               Container(
                 height: h,
                 width: w,
+                key: Key("key1"), // key
                 decoration: BoxDecoration(
                     image: DecorationImage(
                         image: NetworkImage(
@@ -44,11 +44,13 @@ class _HomeState extends State<Home> {
                   builder: (BuildContext context, snp) {
                     if (snp.connectionState == ConnectionState.done) {
                       return ListView.builder(
+                        physics: BouncingScrollPhysics(),
                         itemCount: snp.data!.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return items_builder(context, snp.data![index], () {
+                          return items_builder(context, model, snp.data![index],
+                              () {
                             model.Delete(snp.data![index]);
-                          });
+                          }, true);
                         },
                       );
                     } else if (snp.connectionState == ConnectionState.waiting) {

@@ -27,6 +27,7 @@ class _Update_postState extends State<Update_post> {
   Widget build(BuildContext context) {
     var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -34,35 +35,38 @@ class _Update_postState extends State<Update_post> {
       ),
       body: ChangeNotifierProvider(
         create: (context) => base_model,
-        builder: (con, wid) => SingleChildScrollView(
-          child: Stack(
-            children: [
-              Container(
-                height: h,
-                width: w,
-                child: Column(
-                  children: [
-                    SizedBox(height: 20),
-                    Text_Field.Create_textFiled(
-                        "Title", base_model.control1, 3),
-                    Text_Field.Create_textFiled("Body", base_model.control2, 6),
-                  ],
+        builder: (con, wid) => Consumer<Update_view_model>(
+          builder: (context, model, child) => SingleChildScrollView(
+            child: Stack(
+              children: [
+                Container(
+                  height: h - 58,
+                  width: w,
+                  child: Column(
+                    children: [
+                      SizedBox(height: 20),
+                      Text_Field.Create_textFiled(
+                          "Title", base_model.control1, 3),
+                      Text_Field.Create_textFiled(
+                          "Body", base_model.control2, 6),
+                    ],
+                  ),
                 ),
-              ),
-              base_model.isloading
-                  ? Container(
-                      height: h,
-                      width: w,
-                      color: Colors.black.withOpacity(.4),
-                      child: Container(
-                        height: 60,
-                        width: 60,
-                        alignment: Alignment.center,
-                        child: CircularProgressIndicator(),
-                      ),
-                    )
-                  : SizedBox.shrink()
-            ],
+                model.isloading
+                    ? Container(
+                        height: h,
+                        width: w,
+                        color: Colors.black.withOpacity(.4),
+                        child: Container(
+                          height: 60,
+                          width: 60,
+                          alignment: Alignment.center,
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : SizedBox.shrink()
+              ],
+            ),
           ),
         ),
       ),

@@ -18,29 +18,27 @@ class Rest_APi {
 
   /* Http Requests */
 
-  static Future<String> GET_string(String api) async {
-    var uri = Uri.https(BASE, api, paramsEmpty()); // http or https
+  static Future<List<Post>> GET_POST({String id = ''}) async {
+    var uri = Uri.https(
+        BASE, id.isNotEmpty ? "$API_GET/$id" : API_GET); // http or https
     var response = await get(uri, headers: headers);
     if (response.statusCode == 200) {
-      return response.body;
-    }
-    return "";
-  }
-
-  static Future<List<Post>> GET_parsed_list(String api) async {
-    var uri = Uri.https(BASE, api, paramsEmpty()); // http or https
-    var response = await get(uri, headers: headers);
-    if (response.statusCode == 200) {
-      return List<Post>.from(
-          jsonDecode(response.body).map((e) => Post.fromJson(e)));
+      print('Create \n');
+      print("response body is so long");
+      print("status code = ${response.statusCode}");
+      print('\n');
+      return id.isNotEmpty
+          ? [Post.fromJson(jsonDecode(response.body))]
+          : List<Post>.from(
+              jsonDecode(response.body).map((e) => Post.fromJson(e)));
     }
     return [];
   }
 
-  static Future<String> POST(String api, Map<String, String> params) async {
-    print(params.toString());
-    var uri = Uri.https(BASE, api); // http or https
-    var response = await post(uri, headers: headers, body: jsonEncode(params));
+  static Future<String> POST_Create(Post params) async {
+    var uri = Uri.https(BASE, API_CREATE); // http or https
+    var response = await post(uri,
+        headers: headers, body: jsonEncode(paramsCreate(params)));
     if (response.statusCode == 200 || response.statusCode == 201) {
       print('Create \n');
       print("response body = ${response.body}");
@@ -51,9 +49,10 @@ class Rest_APi {
     return "";
   }
 
-  static Future<String> PUT(String api, Map<String, String> params) async {
-    var uri = Uri.https(BASE, api); // http or https
-    var response = await put(uri, headers: headers, body: jsonEncode(params));
+  static Future<String> PUT_Update(Post params) async {
+    var uri = Uri.https(BASE, API_UPDATE + "/${params.id}"); // http or https
+    var response = await put(uri,
+        headers: headers, body: jsonEncode(paramsUpdate(params)));
     if (response.statusCode == 200) {
       print('Updated \n');
       print("response body = ${response.body}");
@@ -64,25 +63,22 @@ class Rest_APi {
     return "";
   }
 
-  static Future<String> DEL(String api, Map<String, String> params) async {
-    var uri = Uri.https(BASE, api, params); // http or https
+  static Future<bool> DEL(Post p) async {
+    var uri = Uri.https(BASE, API_DELETE + '/${p.id}'); // http or https
     var response = await delete(uri, headers: headers);
     if (response.statusCode == 200) {
       print('Deleted \n');
       print("response body = ${response.body}");
       print("status code = ${response.statusCode}");
       print('\n');
-      return response.body;
+      return response.statusCode == 200;
     }
-    return "";
+    return response.statusCode == 200;
   }
 
   /* Http Params */
 
-  static Map<String, String> paramsEmpty() {
-    Map<String, String> params = {};
-    return params;
-  }
+  static Map<String, String> paramsEmpty() => {};
 
   static Map<String, String> paramsCreate(Post post) {
     Map<String, String> params = {};
